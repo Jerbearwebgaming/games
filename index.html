@@ -17,13 +17,15 @@
     }
 
     #game {
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
     }
 
+    /* IMPORTANT: force the actual Ruffle <canvas>/<object> to fill */
     #game > * {
       width: 100% !important;
       height: 100% !important;
+      display: block;
     }
   </style>
 </head>
@@ -33,18 +35,25 @@
 <div id="game"></div>
 
 <script>
-window.RufflePlayer = window.RufflePlayer || {};
-
 window.addEventListener("load", () => {
     const ruffle = window.RufflePlayer.newest();
     const player = ruffle.createPlayer();
 
+    const container = document.getElementById("game");
+    container.appendChild(player);
+
+    // Critical: force sizing AFTER attach
     player.style.width = "100%";
     player.style.height = "100%";
-
-    document.getElementById("game").appendChild(player);
+    player.style.display = "block";
 
     player.load("game.swf");
+
+    // extra safety: resize on load
+    window.addEventListener("resize", () => {
+        player.style.width = container.clientWidth + "px";
+        player.style.height = container.clientHeight + "px";
+    });
 });
 </script>
 
